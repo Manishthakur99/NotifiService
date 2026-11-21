@@ -1,27 +1,26 @@
-const express = require ('express');
+const express = require('express');
 const bodyParser = require('body-parser');
 const env = require('dotenv');
 const mongoose = require('mongoose');
 
-const transport = require('./services/email.service');
+const routes = require('./routes/ticket.routes');
+
 const app = express();
 
 env.config();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.listen(process.env.PORT, async() =>{
-    console.log('Notification Server Started');
-    transport.sendMail({
-        from: process.env.EMAIL,
-        to: 'skillboostmanish@gmail.com',
-        subject: 'Test Email',
-        text: 'This is a test email from the notification service.'
-    })
-    try{
-         await mongoose.connect(process.env.DB_URL);
+routes(app);
+
+const PORT = process.env.PORT || 3001;
+
+app.listen(PORT, async () => {
+    console.log('Notification Server Started on port', PORT);
+    try {
+        await mongoose.connect(process.env.DB_URL);
+        console.log('Connected to MongoDB');
+    } catch (err) {
+        console.error('MongoDB connection error:', err);
     }
-     catch(err){
-        console.error(err);
-    }
-})
+});
