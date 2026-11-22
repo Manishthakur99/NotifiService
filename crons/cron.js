@@ -8,7 +8,7 @@
 
 const cron = require('node-cron');
 const Ticket = require('../models/ticketNotification');
-const Mailer = require('../services/email.service');
+const { sendMail } = require('../services/email.service');
 
 /**
  * Initializes and starts the mailer cron job.
@@ -23,9 +23,6 @@ const Mailer = require('../services/email.service');
  * @returns {void}
  */
 const mailerCron = () => {
-    // Initialize the email transporter using credentials from environment
-    const mailer = Mailer(process.env.EMAIL, process.env.EMAIL_PASS);
-
     // Schedule the cron to run every 2 minutes
     cron.schedule('*/2 * * * *', async () => {
         console.log("Executing Cron Again");
@@ -46,7 +43,7 @@ const mailerCron = () => {
             };
 
             // Send the email asynchronously
-            mailer.sendMail(mailData, async (err, data) => {
+            sendMail(mailData, async (err, data) => {
                 if (err) {
                     // Log error if email fails to send
                     console.log(err);
