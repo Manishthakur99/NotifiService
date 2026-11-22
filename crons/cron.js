@@ -32,8 +32,8 @@ const mailerCron = () => {
             status: 'PENDING'
         });
 
-        // Process each pending notification
-        notificationsToBeSent.forEach(notification => {
+        // Process each pending notification sequentially
+        for (const notification of notificationsToBeSent) {
             // Construct email data for Nodemailer
             const mailData = {
                 from: 'mba@support.com',                                    // Sender address
@@ -42,20 +42,19 @@ const mailerCron = () => {
                 text: notification.content                                  // Email body
             };
 
-            // Send the email asynchronously
-            sendMail(mailData, async (err, data) => {
-                if (err) {
-                    // Log error if email fails to send
-                    console.log(err);
-                } else {
-                    // Log success and update ticket status to SUCCESS
-                    console.log(data);
-                    const savedNotification = await Ticket.findOne({ _id: notification._id });
-                    savedNotification.status = "SUCCESS";
-                    await savedNotification.save();
-                }
-            });
-        });
+            try {
+                // Send the email using the Promise-based sendMail
+                const data = await sendMail(mailData);
+                // Log success and update ticket status to SUCCESS
+                console.log(data);
+                const savedNotification = await Ticket.findOne({ _id: notification._id });
+                savedNotification.status = "SUCCESS";
+                await savedNotification.save();
+            } catch (err) {
+                // Log error if email fails to send
+                console.log(err);
+            }
+        }
     });
 }
 
