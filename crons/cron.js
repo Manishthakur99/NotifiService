@@ -20,7 +20,7 @@ const { sendMail } = require('../services/email.service');
  *  3. Updates the ticket status to 'SUCCESS' on successful delivery
  *  4. Logs any errors encountered during sending
  * 
- * @returns {void}
+ * @returns {Promise<void>} - Resolves when cron is scheduled
  */
 const mailerCron = () => {
     // Schedule the cron to run every 2 minutes
