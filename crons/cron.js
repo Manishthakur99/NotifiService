@@ -12,15 +12,15 @@ const { sendMail } = require('../services/email.service');
 
 /**
  * Initializes and starts the mailer cron job.
- * 
- * The cron runs every 2 minutes (cron expression: */2 * * * *).
+ *
+ * The cron runs every 2 minutes (cron expression: "star-slash-2 * * * *").
  * On each run:
  *  1. Fetches all tickets with status 'PENDING'
  *  2. Sends an email to each recipient using Nodemailer
  *  3. Updates the ticket status to 'SUCCESS' on successful delivery
  *  4. Logs any errors encountered during sending
- * 
- * @returns {Promise<void>} - Resolves when cron is scheduled
+ *
+ * @returns {void}
  */
 const mailerCron = () => {
     // Schedule the cron to run every 2 minutes
